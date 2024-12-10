@@ -43,8 +43,8 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      backend: ${{ steps.filter.outputs.mocha }}
-      frontend: ${{ steps.filter.outputs.nestjs }}
+      mocha: ${{ steps.filter.outputs.mocha }}
+      nestjs: ${{ steps.filter.outputs.nestjs }}
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v3
