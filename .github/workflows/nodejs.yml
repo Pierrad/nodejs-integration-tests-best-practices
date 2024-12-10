@@ -41,6 +41,7 @@ jobs:
         uses: ./.github/actions/persist-node_modules
 
   test-default:
+    if: 
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +63,8 @@ jobs:
         run: npm test
 
   test-nestjs:
+    if: 
+      changes: recipes/nestjs/**
     needs: setup
     runs-on: ubuntu-latest
     steps:
