@@ -70,14 +70,13 @@ jobs:
       - name: Check for NestJS Changes
         id: check_changes
         run: |
-          git fetch origin
+          git fetch origin ${{ github.base_ref }}
           CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/nestjs/')
           echo "changed=$CHANGED" >> $GITHUB_ENV
 
       - name: Skip if No Changes in NestJS
         if: env.changed == ''
         run: echo "No changes detected in recipes/nestjs. Skipping."
-
 
       - id: setup-node
         name: Setup Node.js
@@ -104,7 +103,7 @@ jobs:
       - name: Check for Mocha Changes
         id: check_changes
         run: |
-          git fetch origin
+          git fetch origin ${{ github.base_ref }}
           CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/mocha/')
           echo "changed=$CHANGED" >> $GITHUB_ENV
 
