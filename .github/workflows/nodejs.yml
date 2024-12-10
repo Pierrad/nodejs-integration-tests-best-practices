@@ -41,7 +41,6 @@ jobs:
         uses: ./.github/actions/persist-node_modules
 
   test-default:
-    if: 
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -50,7 +49,7 @@ jobs:
       - id: setup-node
         name: Setup Node.js
         uses: ./.github/actions/setup-node
-        
+
       - id: install-docker-compose
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
@@ -63,8 +62,7 @@ jobs:
         run: npm test
 
   test-nestjs:
-    if: 
-      changes: recipes/nestjs/**
+    if: ${{ contains(github.event.head_commit.message, 'recipes/nestjs') || contains(github.event.pull_request.changed_files, 'recipes/nestjs') }}
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +71,7 @@ jobs:
       - id: setup-node
         name: Setup Node.js
         uses: ./.github/actions/setup-node
-        
+
       - id: install-docker-compose
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
@@ -86,6 +84,7 @@ jobs:
         run: npm run test:nestjs
 
   test-mocha:
+    if: ${{ contains(github.event.head_commit.message, 'recipes/mocha') || contains(github.event.pull_request.changed_files, 'recipes/mocha') }}
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +93,7 @@ jobs:
       - id: setup-node
         name: Setup Node.js
         uses: ./.github/actions/setup-node
-        
+
       - id: install-docker-compose
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
