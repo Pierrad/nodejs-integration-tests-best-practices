@@ -66,12 +66,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Check for NestJS Changes
         id: check_changes
         run: |
-          git fetch origin ${{ github.base_ref }}
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/nestjs/')
+          $diff = git diff --name-only HEAD^ HEAD
+          $SourceDiff = $diff | Where-Object { $_ -match '^recipes/nestjs/' }
+          CHANGED = $SourceDiff.Length -gt 0
           echo "changed=$CHANGED" >> $GITHUB_ENV
 
       - name: Skip if No Changes in NestJS
@@ -99,12 +102,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
 
       - name: Check for Mocha Changes
         id: check_changes
         run: |
-          git fetch origin ${{ github.base_ref }}
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/mocha/')
+          $diff = git diff --name-only HEAD^ HEAD
+          $SourceDiff = $diff | Where-Object { $_ -match '^recipes/mocha/' }
+          CHANGED = $SourceDiff.Length -gt 0
           echo "changed=$CHANGED" >> $GITHUB_ENV
 
       - name: Skip if No Changes in Mocha
