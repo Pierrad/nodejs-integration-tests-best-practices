@@ -10,6 +10,8 @@ const {
 } = require('../../example-application/entry-points/api');
 const OrderRepository = require('../../example-application/data-access/order-repository');
 
+// Test conditional job running
+
 // So we can use containSubset
 chai.use(chaiSubset);
 const expect = chai.expect;

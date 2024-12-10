@@ -66,35 +66,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
 
-      - name: Check for NestJS Changes
-        id: check_changes
-        run: |
-          $diff = git diff --name-only HEAD^ HEAD
-          $SourceDiff = $diff | Where-Object { $_ -match '^recipes/nestjs/' }
-          CHANGED = $SourceDiff.Length -gt 0
-          echo "changed=$CHANGED" >> $GITHUB_ENV
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            tf:
+              - 'recipes/nestjs/**/*'
 
       - name: Skip if No Changes in NestJS
-        if: env.changed == ''
+        if: steps.changes.outputs.tf != 'true'
         run: echo "No changes detected in recipes/nestjs. Skipping."
 
       - id: setup-node
+        if: steps.changes.outputs.tf != 'true'
         name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - id: install-docker-compose
+        if: steps.changes.outputs.tf != 'true'
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
 
       - id: restore-node_modules
+        if: steps.changes.outputs.tf != 'true'
         name: Restore node_modules
         uses: ./.github/actions/restore-node_modules
 
       - name: Run NestJS Tests
-        if: env.changed != ''
+        if: steps.changes.outputs.tf != 'true'
         run: npm run test:nestjs
 
   test-mocha:
@@ -102,33 +102,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
 
-      - name: Check for Mocha Changes
-        id: check_changes
-        run: |
-          $diff = git diff --name-only HEAD^ HEAD
-          $SourceDiff = $diff | Where-Object { $_ -match '^recipes/mocha/' }
-          CHANGED = $SourceDiff.Length -gt 0
-          echo "changed=$CHANGED" >> $GITHUB_ENV
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            tf:
+              - 'recipes/mocha/**/*'  
 
       - name: Skip if No Changes in Mocha
-        if: env.changed == ''
+        if: steps.changes.outputs.tf != 'true'
         run: echo "No changes detected in recipes/mocha. Skipping."
 
       - id: setup-node
+        if: steps.changes.outputs.tf != 'true'
         name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - id: install-docker-compose
+        if: steps.changes.outputs.tf != 'true'
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
 
       - id: restore-node_modules
+        if: steps.changes.outputs.tf != 'true'
         name: Restore node_modules
         uses: ./.github/actions/restore-node_modules
 
       - name: Run Mocha Tests
-        if: env.changed != ''
+        if: steps.changes.outputs.tf != 'true'
         run: npm run test:mocha
