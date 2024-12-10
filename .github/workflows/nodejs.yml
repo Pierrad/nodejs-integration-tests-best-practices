@@ -74,6 +74,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Ensure Dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm i
+
       - name: Run Default Tests
         run: npm test
 
@@ -82,6 +87,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Ensure Dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm i
+
       - name: Run NestJS Tests
         run: npm run test:nestjs
 
@@ -90,5 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: Ensure Dependencies
+        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
+        run: npm i
+
       - name: Run Mocha Tests
         run: npm run test:mocha
