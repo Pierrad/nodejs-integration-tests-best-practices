@@ -43,7 +43,7 @@ jobs:
 
       - id: persist-node_modules
         name: Persist node_modules
-        uses: ./github/actions/persist-node_modules
+        uses: ./.github/actions/persist-node_modules
 
   test-default:
     needs: setup
@@ -61,7 +61,7 @@ jobs:
 
       - id: restore-node_modules
         name: Restore node_modules
-        uses: ./github/actions/restore-node_modules
+        uses: ./.github/actions/restore-node_modules
 
       - name: Run Default Tests
         run: npm test
@@ -82,7 +82,7 @@ jobs:
 
       - id: restore-node_modules
         name: Restore node_modules
-        uses: ./github/actions/restore-node_modules
+        uses: ./.github/actions/restore-node_modules
 
       - name: Run NestJS Tests
         run: npm run test:nestjs
@@ -103,7 +103,7 @@ jobs:
 
       - id: restore-node_modules
         name: Restore node_modules
-        uses: ./github/actions/restore-node_modules
+        uses: ./.github/actions/restore-node_modules
 
       - name: Run Mocha Tests
         run: npm run test:mocha
