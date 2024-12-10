@@ -43,7 +43,6 @@ jobs:
 
       - name: Persist node_modules
         run: tar -czf node_modules.tar.gz node_modules
-        id: save-node-modules
 
       - name: Upload node_modules Artifact
         uses: actions/upload-artifact@v3
@@ -56,6 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
@@ -73,6 +73,7 @@ jobs:
     needs: test-base
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run Default Tests
         run: npm test
 
@@ -80,6 +81,7 @@ jobs:
     needs: test-base
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run NestJS Tests
         run: npm run test:nestjs
 
@@ -87,5 +89,6 @@ jobs:
     needs: test-base
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run Mocha Tests
         run: npm run test:mocha
