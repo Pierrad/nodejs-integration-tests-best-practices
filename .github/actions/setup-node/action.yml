@@ -1,0 +1,15 @@
+name: "Setup node"
+description: "Install node from nvm version"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Read .nvmrc
+      run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+      id: nvm
+      shell: bash
+
+    - name: Use Node.js (.nvmrc)
+      uses: actions/setup-node@v2
+      with:
+        node-version: "${{ steps.nvm.outputs.NVMRC }}"

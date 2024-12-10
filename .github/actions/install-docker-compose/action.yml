@@ -1,0 +1,12 @@
+name: "Install docker-compose"
+description: "Install docker-compose"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install docker-compose
+      id: docker-compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+      shell: bash
