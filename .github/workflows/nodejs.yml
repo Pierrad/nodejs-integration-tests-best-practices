@@ -62,10 +62,20 @@ jobs:
         run: npm test
 
   test-nestjs:
-    if: ${{ contains(github.event.head_commit.message, 'recipes/nestjs') || contains(github.event.pull_request.changed_files, 'recipes/nestjs') }}
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Check for NestJS Changes
+        id: check_changes
+        run: |
+          git fetch origin
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/nestjs/')
+          echo "changed=$CHANGED" >> $GITHUB_ENV
+
+      - name: Skip if No Changes in NestJS
+        if: env.changed == ''
+        run: echo "No changes detected in recipes/nestjs. Skipping."
+
       - uses: actions/checkout@v2
 
       - id: setup-node
@@ -81,13 +91,24 @@ jobs:
         uses: ./.github/actions/restore-node_modules
 
       - name: Run NestJS Tests
+        if: env.changed != ''
         run: npm run test:nestjs
 
   test-mocha:
-    if: ${{ contains(github.event.head_commit.message, 'recipes/mocha') || contains(github.event.pull_request.changed_files, 'recipes/mocha') }}
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Check for Mocha Changes
+        id: check_changes
+        run: |
+          git fetch origin
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }} | grep -E '^recipes/mocha/')
+          echo "changed=$CHANGED" >> $GITHUB_ENV
+
+      - name: Skip if No Changes in Mocha
+        if: env.changed == ''
+        run: echo "No changes detected in recipes/mocha. Skipping."
+
       - uses: actions/checkout@v2
 
       - id: setup-node
@@ -103,4 +124,5 @@ jobs:
         uses: ./.github/actions/restore-node_modules
 
       - name: Run Mocha Tests
+        if: env.changed != ''
         run: npm run test:mocha
