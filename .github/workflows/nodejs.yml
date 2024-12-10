@@ -65,6 +65,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Check for NestJS Changes
         id: check_changes
         run: |
@@ -76,7 +78,6 @@ jobs:
         if: env.changed == ''
         run: echo "No changes detected in recipes/nestjs. Skipping."
 
-      - uses: actions/checkout@v2
 
       - id: setup-node
         name: Setup Node.js
@@ -98,6 +99,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+
       - name: Check for Mocha Changes
         id: check_changes
         run: |
@@ -108,8 +111,6 @@ jobs:
       - name: Skip if No Changes in Mocha
         if: env.changed == ''
         run: echo "No changes detected in recipes/mocha. Skipping."
-
-      - uses: actions/checkout@v2
 
       - id: setup-node
         name: Setup Node.js
