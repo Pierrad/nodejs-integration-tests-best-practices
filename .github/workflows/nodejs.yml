@@ -50,7 +50,7 @@ jobs:
           name: node_modules
           path: node_modules.tar.gz
 
-  test-base:
+  test-setup:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -60,6 +60,16 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ needs.setup.outputs.node-version }}
+        
+      - name: Install docker-compose
+        run: sudo apt-get install docker-compose
+
+
+  test-default:
+    needs: test-setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Download node_modules Artifact
         uses: actions/download-artifact@v3
@@ -69,41 +79,39 @@ jobs:
       - name: Extract node_modules
         run: tar -xzf node_modules.tar.gz
 
-  test-default:
-    needs: test-base
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Ensure Dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: npm i
-
       - name: Run Default Tests
         run: npm test
 
   test-nestjs:
-    needs: test-base
+    needs: test-setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Ensure Dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: npm i
+      - name: Download node_modules Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+
+      - name: Extract node_modules
+        run: tar -xzf node_modules.tar.gz
 
       - name: Run NestJS Tests
         run: npm run test:nestjs
 
   test-mocha:
-    needs: test-base
+    needs: test-setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Ensure Dependencies
-        if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: npm i
+      - name: Download node_modules Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+
+      - name: Extract node_modules
+        run: tar -xzf node_modules.tar.gz
 
       - name: Run Mocha Tests
         run: npm run test:mocha
