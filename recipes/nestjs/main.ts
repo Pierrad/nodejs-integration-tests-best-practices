@@ -2,6 +2,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app/app.module";
 
+// TEST
 let app: INestApplication;
 
 export const initializeWebServer = async () => {

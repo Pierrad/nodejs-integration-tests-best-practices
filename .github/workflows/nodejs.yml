@@ -78,7 +78,7 @@ jobs:
         run: npm test
 
   test-nestjs:
-    needs: [setup, changes]
+    needs: [setup, changes, test-default]
     if: ${{ needs.changes.outputs.nestjs == 'true' }}
     runs-on: ubuntu-latest
     steps:
@@ -100,7 +100,7 @@ jobs:
         run: npm run test:nestjs
 
   test-mocha:
-    needs: [setup, changes]
+    needs: [setup, changes, test-default]
     if: ${{ needs.changes.outputs.mocha == 'true' }}
     runs-on: ubuntu-latest
     steps:
