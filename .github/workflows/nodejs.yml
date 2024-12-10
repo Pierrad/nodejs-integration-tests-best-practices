@@ -39,9 +39,25 @@ jobs:
       - id: persist-node_modules
         name: Persist node_modules
         uses: ./.github/actions/persist-node_modules
+  
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.mocha }}
+      frontend: ${{ steps.filter.outputs.nestjs }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          nestjs:
+            - 'recipes/nestjs/**'
+          mocha:
+            - 'recipes/mocha/**'
 
   test-default:
-    needs: setup
+    needs: [setup, changes]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -62,73 +78,45 @@ jobs:
         run: npm test
 
   test-nestjs:
-    needs: setup
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.nestjs == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            nestjs:
-              - 'recipes/nestjs/**/*'
-
-      - name: Skip if No Changes in NestJS
-        if: steps.changes.outputs.nestjs != 'true'
-        run: echo "No changes detected in recipes/nestjs. Skipping."
-
       - id: setup-node
-        if: steps.changes.outputs.nestjs == 'true'
         name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - id: install-docker-compose
-        if: steps.changes.outputs.nestjs == 'true'
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
 
       - id: restore-node_modules
-        if: steps.changes.outputs.nestjs == 'true'
         name: Restore node_modules
         uses: ./.github/actions/restore-node_modules
 
       - name: Run NestJS Tests
-        if: steps.changes.outputs.nestjs == 'true'
         run: npm run test:nestjs
 
   test-mocha:
-    needs: setup
+    needs: [setup, changes]
+    if: ${{ needs.changes.outputs.mocha == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            mocha:
-              - 'recipes/mocha/**/*'  
-
-      - name: Skip if No Changes in Mocha
-        if: steps.changes.outputs.tf != 'true'
-        run: echo "No changes detected in recipes/mocha. Skipping."
-
       - id: setup-node
-        if: steps.changes.outputs.tf == 'true'
         name: Setup Node.js
         uses: ./.github/actions/setup-node
 
       - id: install-docker-compose
-        if: steps.changes.outputs.tf == 'true'
         name: Install docker-compose
         uses: ./.github/actions/install-docker-compose
 
       - id: restore-node_modules
-        if: steps.changes.outputs.tf == 'true'
         name: Restore node_modules
         uses: ./.github/actions/restore-node_modules
 
       - name: Run Mocha Tests
-        if: steps.changes.outputs.tf == 'true'
         run: npm run test:mocha
